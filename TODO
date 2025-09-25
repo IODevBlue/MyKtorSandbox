@@ -27,3 +27,26 @@ Telegram bot:
   [ ] Configure privacy mode (decide if the bot sees all messages in groups or only commands)
   [ ] Add a bot description, about text, and command menu
   [ ] Set a profile picture for your bot
+
+Telegram mini app:
+  [ ] Load user identity via initData (secure Telegram authentication)
+  [ ] Detect theme (light/dark mode) and adjust UI
+  [ ] Apply Telegram’s accent colors and fonts
+  [ ] Add a main button at the bottom (e.g. "Submit")
+  [ ] Configure main button text, color, and visibility dynamically
+  [ ] Add secondary buttons (menu buttons in the webview)
+  [ ] Expand and collapse the webview programmatically
+  [ ] Close the webview and return to chat
+  [ ] Trigger haptic feedback (click, success, error, heavy/light impact)
+  [ ] Copy text to clipboard
+  [ ] Open links inside or outside Telegram
+  [ ] Send data back to the bot via `Telegram.WebApp.sendData`
+  [ ] Receive bot messages that trigger the web app
+  [ ] Handle invoices and payments via the Payments API
+  [ ] Display success or error alerts inside the app
+  [ ] Implement smooth transitions between sections/pages
+  [ ] Use custom fonts, icons, and branding while respecting Telegram theme
+  [ ] Implement localization based on user language from initData
+  [ ] Test on mobile (iOS/Android), desktop, and Web Telegram
+  [ ] Securely validate initData on the server to prevent forgery
+
