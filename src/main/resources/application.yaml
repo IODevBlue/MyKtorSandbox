@@ -1,0 +1,13 @@
+ktor:
+    application:
+        modules:
+            - io.github.iodevblue.sandbox.ktor.playground.ApplicationKt.module
+    deployment:
+        port: 8080
+        watch:
+            - classes
+            - resources
+    development: true
+    environment:
+        TELEGRAM_TEST_BOT_TOKEN: "$TELEGRAM_TEST_BOT_TOKEN"
+
