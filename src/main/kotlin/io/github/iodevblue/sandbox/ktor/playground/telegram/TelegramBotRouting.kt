@@ -20,7 +20,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-// TODO: Next up is how to serve images and videos
 fun Application.telegramBotRouting() {
     val botToken = environment.config.propertyOrNull("ktor.environment.TELEGRAM_TEST_BOT_TOKEN")?.getString()
         ?: error("TELEGRAM_TEST_BOT_TOKEN not set")

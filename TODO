@@ -1,0 +1,29 @@
+Telegram bot:
+  [ ] Send text messages
+  [ ] Send Markdown / HTML formatted messages
+  [ ] Send photos, videos, documents, audio files
+  [ ] Send voice messages (OGG/Opus)
+  [ ] Send locations (static + live location updates)
+  [ ] Send polls & quizzes
+  [ ] Forward and copy messages
+  [ ] Reply to messages
+  [ ] Delete messages
+  [ ] Pin / unpin messages
+  [ ] Restrict or kick users (if in groups)
+  [ ] Set chat title, photo, description (for groups/channels where the bot is admin)
+  [ ] Manage stickers, emoji, reactions
+  [ ] Define bot commands (like /start, /help, /todo)
+  [ ] Handle inline queries (@yourbot query) to return instant results
+  [ ] Answer callback queries (when user presses inline keyboard buttons)
+  [ ] Use custom keyboards (reply keyboard or inline keyboard)
+  [ ] Get user info (IDs, usernames, languages)
+  [ ] Get chat info (group/channel IDs, members count)
+  [ ] Track when users join/leave a group
+  [ ] Send animations (GIFs, stickers)
+  [ ] Send games (via Game Platform, bot provides scoreboards)
+  [ ] Use payments (Telegram Payments API)
+  [ ] Send invoices & handle transactions
+  [ ] Create polls, stop them, get results
+  [ ] Configure privacy mode (decide if the bot sees all messages in groups or only commands)
+  [ ] Add a bot description, about text, and command menu
+  [ ] Set a profile picture for your bot
