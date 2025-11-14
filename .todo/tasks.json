@@ -1,0 +1,550 @@
+[
+  {
+    "id": "TASK_1",
+    "priority": "MEDIUM",
+    "tags": [
+      "API"
+    ],
+    "title": "Implement Request Validation",
+    "description": "Validate incoming request bodies using serializers and manual checks. Return structured error responses.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 35,
+        "second": 1,
+        "nano": 338650000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_3",
+    "priority": "LOW",
+    "tags": [
+      "Debugging"
+    ],
+    "title": "Set Up Logging Interceptor",
+    "description": "Log incoming requests and outgoing responses with useful metadata for debugging.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 35,
+        "second": 47,
+        "nano": 326183000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_6",
+    "priority": "HIGH",
+    "tags": [
+      "Architecture"
+    ],
+    "title": "Add Dependency Injection (Koin)",
+    "description": "Implement Koin DI for services, controllers, and repository bindings. Clean up Application startup code.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 36,
+        "second": 34,
+        "nano": 536924000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_10",
+    "priority": "MEDIUM",
+    "tags": [
+      "Data"
+    ],
+    "title": "Create Data Models \u0026 DTOs",
+    "description": "Define domain models, DTOs for requests/responses, and mapping logic between layers.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 42,
+        "second": 58,
+        "nano": 807451000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_15",
+    "priority": "CRITICAL",
+    "tags": [
+      "Database"
+    ],
+    "title": "Integrate Database (PostgreSQL)",
+    "description": "Add Exposed ORM, configure database connection, create migration folder, initialize database.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 43,
+        "second": 34,
+        "nano": 452424000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_21",
+    "priority": "HIGH",
+    "tags": [
+      "Architecture"
+    ],
+    "title": "Implement Repository Pattern",
+    "description": "Create repository interfaces and implementations for database operations.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 44,
+        "second": 3,
+        "nano": 372941000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_28",
+    "priority": "CRITICAL",
+    "tags": [
+      "Security"
+    ],
+    "title": "Add Authentication (JWT)",
+    "description": "Implement JWT login, token generation, token validation, and secure password hashing.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 44,
+        "second": 36,
+        "nano": 602622000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_36",
+    "priority": "HIGH",
+    "tags": [
+      "Security"
+    ],
+    "title": "Protect Routes with JWT Auth",
+    "description": "Create authenticated routes using authenticate(\"auth-jwt\") { ... }.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 45,
+        "second": 0,
+        "nano": 665017000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_45",
+    "priority": "HIGH",
+    "tags": [
+      "API"
+    ],
+    "title": "Create User Registration \u0026 Login Endpoints",
+    "description": "Implement POST /auth/register and POST /auth/login using proper validation and JWT generation.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 45,
+        "second": 26,
+        "nano": 290749000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_55",
+    "priority": "MEDIUM",
+    "tags": [
+      "Security"
+    ],
+    "title": "Add Role-Based Authorization",
+    "description": "Create roles (USER, ADMIN) and protect certain routes with custom authorization logic.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 45,
+        "second": 45,
+        "nano": 447084000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_66",
+    "priority": "MEDIUM",
+    "tags": [
+      "API"
+    ],
+    "title": "Centralize Error Handling",
+    "description": "Create a global exception handler to return consistent error responses for validation errors, DB errors, etc.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 46,
+        "second": 9,
+        "nano": 754397000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_78",
+    "priority": "LOW",
+    "tags": [
+      "Security"
+    ],
+    "title": "Implement Rate Limiting",
+    "description": "Add simple IP-based rate limiting middleware to prevent abuse.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 46,
+        "second": 33,
+        "nano": 384835000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_91",
+    "priority": "HIGH",
+    "tags": [
+      "Security"
+    ],
+    "title": "Add CORS Configuration",
+    "description": "Enable cross-origin resource sharing for Flutter, React, or Android apps hitting the API.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 46,
+        "second": 52,
+        "nano": 8627000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_105",
+    "priority": "MEDIUM",
+    "tags": [
+      "API"
+    ],
+    "title": "Implement File Upload Support",
+    "description": "Add routes for multipart uploads (images, audio, documents).",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 47,
+        "second": 11,
+        "nano": 209248000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_120",
+    "priority": "LOW",
+    "tags": [
+      "API"
+    ],
+    "title": "Implement File Streaming \u0026 Downloads",
+    "description": "Add endpoints to stream or download files. Useful for media apps.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 47,
+        "second": 32,
+        "nano": 886001000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_136",
+    "priority": "MEDIUM",
+    "tags": [],
+    "title": "Add WebSockets",
+    "description": "Implement WebSocket server, handle sessions, and broadcast messages.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 48,
+        "second": 9,
+        "nano": 624759000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_153",
+    "priority": "MEDIUM",
+    "tags": [
+      "WebSocket"
+    ],
+    "title": "Build Chat or Live Notification System",
+    "description": "Use WebSockets for real-time messaging or notifications.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 48,
+        "second": 29,
+        "nano": 503310000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_171",
+    "priority": "LOW",
+    "tags": [
+      "Security"
+    ],
+    "title": "Configure Sessions",
+    "description": "Add server-side sessions using cookies for simple authentication needs.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 48,
+        "second": 49,
+        "nano": 773820000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_190",
+    "priority": "MEDIUM",
+    "tags": [
+      "Documentation"
+    ],
+    "title": "Add Swagger / OpenAPI Documentation",
+    "description": "Generate API documentation automatically using Ktor OpenAPI plugin.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 49,
+        "second": 16,
+        "nano": 963300000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_210",
+    "priority": "LOW",
+    "tags": [],
+    "title": "Implement Jobs / Background Tasks",
+    "description": "Use Ktor’s coroutine engine to run scheduled tasks, cleanups, reminders, etc.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 49,
+        "second": 43,
+        "nano": 172158000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_231",
+    "priority": "HIGH",
+    "tags": [
+      "Deployment"
+    ],
+    "title": "Prepare for Deployment",
+    "description": "Configure environment variables, production logging, and database migrations.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 50,
+        "second": 19,
+        "nano": 812464000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_253",
+    "priority": "LOW",
+    "tags": [
+      "Deployment"
+    ],
+    "title": "Deploy to DigitalOcean / Render / Railway",
+    "description": "Deploy as FatJar or Docker image with reverse proxy.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 50,
+        "second": 40,
+        "nano": 705799000
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_276",
+    "priority": "LOW",
+    "tags": [
+      "DevOps"
+    ],
+    "title": "Add CI/CD with GitHub Actions",
+    "description": "Automatic build, test, and deploy pipeline.",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 14
+      },
+      "time": {
+        "hour": 6,
+        "minute": 51,
+        "second": 15,
+        "nano": 58908000
+      }
+    },
+    "isImported": false
+  }
+]
