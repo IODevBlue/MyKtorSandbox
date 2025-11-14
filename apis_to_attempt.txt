@@ -1,0 +1,139 @@
+1. Title: Personal Blogging Platform API
+   Difficulty: Easy
+   Skills and technologies used: CRUD for main operations, databases (SQL or NoSQL), server-side RESTful API.
+   Description: A RESTful API to power a personal blog: return a list of articles (with filters such as publish date or tags), return a single article by ID, create new articles, delete by ID, update by ID.
+
+---
+
+2. Title: To-Do List API
+   Difficulty: Easy
+   Skills and technologies used: REST API design, JSON, basic authentication middleware.
+   Description: Build a To-Do application API: authentication logic (users and credentials), create users and tasks, update/delete tasks (including their status), list/filter tasks by status and details.
+
+---
+
+3. Title: Weather API Wrapper Service
+   Difficulty: Easy
+   Skills and technologies used: Third-party API integration, caching strategy, environment variable management.
+   Description: Wrap an external weather API: integrate third-party service, add in-memory caching (e.g., Redis) with expiration, use environment variables for API keys.
+
+---
+
+4. Title: Expense Tracker API
+   Difficulty: Easy
+   Skills and technologies used: Data modeling, user authentication (JWT).
+   Description: An API for tracking expenses: sign up new users, generate/validate JWTs, list/filter past expenses (past week, month, 3 months, custom date ranges), add new expenses, remove and update existing expenses; categories like Groceries, Leisure, Electronics, Utilities, Clothing, Health, Others.
+
+---
+
+5. Title: Markdown Note-taking App
+   Difficulty: Moderate
+   Skills and technologies used: Text processing, Markdown libraries, persistent storage, REST API with file upload.
+   Description: A note-taking app: REST API that allows file uploads, processing markdown text into HTML, grammar checking endpoint, save note as markdown, return rendered HTML version.
+
+---
+
+6. Title: URL Shortening Service
+   Difficulty: Moderate
+   Skills and technologies used: Database indexing, HTTP redirects, RESTful endpoints.
+   Description: A URL shortener: accept a long URL and return a shorter version; store mapping in database; configure a catch-all route that redirects user seamlessly to full URL based on shortened code.
+
+---
+
+7. Title: Real-time Polling App
+   Difficulty: Moderate
+   Skills and technologies used: WebSockets, live data updates, state management.
+   Description: Build a real-time polling application: client connects to server via sockets, sends request, server broadcasts live updates; explore 2-way communication, and build either CLI or terminal client to display real-time results.
+
+---
+
+8. Title: Simple E-commerce API
+   Difficulty: Moderate
+   Skills and technologies used: Shopping cart logic, payment gateway integration (Stripe, PayPal), product inventory management.
+   Description: Backend API for simple e-commerce: JWT authentication, payment gateway integration, complex data modeling for products and shopping carts, user creation and editing products, product listings, cart management.
+
+---
+
+9. Title: Fitness Workout Tracker
+   Difficulty: Moderate
+   Skills and technologies used: User-specific data storage, CRUD for workout sessions, date-time manipulation.
+   Description: Backend for a workout tracker: user signup/login with JWT, create workouts composed of multiple exercises, update workouts and add comments, associate workouts with specific date/time, list active/pending workouts sorted by date, report past workouts (percentage finished) and manage data model complexity (predefined exercises grouped into sessions).
+
+---
+
+10. Title: Recipe Sharing Platform
+    Difficulty: Moderate
+    Skills and technologies used: File uploads and image processing (like Sharp), user permissions, complex querying.
+    Description: A REST API (or multiple APIs) for recipes: list recipes (filter by keywords, publication date, chef, labels), pagination; users sign up as chefs and upload their own recipes; upload images, process (resize) using library; JWT-secured endpoints for creation.
+
+---
+
+11. Title: Movie Reservation System
+    Difficulty: Difficult
+    Skills and technologies used: Relational data modeling (SQL), seat reservation logic, transaction management, schedule management.
+    Description: Build ticket reservation backend: list movies, search/filter by date/genre/actors, pick seats for a movie at a given date/time, manage virtual representation of theatre seating, integrate payment gateway.
+
+---
+
+12. Title: Restaurant Review Platform (API) with automatic NLP analysis
+    Difficulty: Difficult
+    Skills and technologies used: RESTful API, in-memory database (for live leaderboard), SQL, Natural Language Processing to auto-label positive and negative comments.
+    Description: Users post reviews of restaurants (by restaurant ID). Maintain a live leaderboard of restaurants using in-memory store (e.g., Redis SortedSet) based on NLP classification of review text (positive or negative).
+
+---
+
+13. Title: Multiplayer Battleship Game Server
+    Difficulty: Difficult
+    Skills and technologies used: Game state synchronization, low-latency networking, concurrency control.
+    Description: Build a game server for a multiplayer battleship game: maintain internal state of each player board, enable two-way communication (players ↔ server), allow players to join and set up initial state; focus on sockets/low-latency.
+
+---
+
+14. Title: Database Backup CLI utility
+    Difficulty: Difficult
+    Skills and technologies used: Advanced SQL, Database fundamentals, CLI development, Node.js (for CLI).
+    Description: A command-line utility to back up entire database: input host, username, password, database name, destination folder; connect to database, list tables, output files that allow restoration on another server.
+
+---
+
+15. Title: Online Code Compiler API
+    Difficulty: Difficult
+    Skills and technologies used: Sandboxing code execution, integration with compilers, WebSocket communication.
+    Description: Backend for remote code execution service: accept source code (for one or more languages), execute in safe sandbox environment preventing system damage, provide status report (time running, start time, lines executed) for long-running tasks.
+
+---
+
+16. Title: Messaging Platform Backend
+    Difficulty: Difficult
+    Skills and technologies used: Real-time messaging, end-to-end encryption, contact synchronization.
+    Description: Build backend for chat platform: message encryption, online/offline detection, “user is typing” real-time indicator, broadcast messages to connected clients, socket or real-time framework.
+
+---
+
+17. Title: Content Delivery Network (CDN) Simulator
+    Difficulty: Very Difficult
+    Skills and technologies used: Load balancing algorithms, caching strategies, network latency simulation.
+    Description: Set up your own CDN: replicate static content across multiple servers (cloud provider), configure load balancer, implement caching strategy, simulate network latency and multi-server distribution.
+
+---
+
+18. Title: Time-tracking CLI for Freelancers
+    Difficulty: Very Difficult
+    Skills and technologies used: Time tracking, interactive CLI, Day.js for time operations, reporting.
+    Description: CLI tool for freelancers: commands like `start project1`, `stop project2`; interactive reporting mode to show time spent on each project (filter by date/time); manage tracking chunks and produce reports.
+
+---
+
+19. Title: JS Obfuscator CLI utility
+    Difficulty: Very Difficult
+    Skills and technologies used: Code obfuscation, batch processing of files using a CLI, Node.js.
+    Description: Build CLI tool that obfuscates JavaScript code: process entire folder (including sub-folders), produce `.obs.js` extensions, avoid using existing libraries that do everything so you learn.
+
+---
+
+20. Title: Web Scraper CLI
+    Difficulty: Very Difficult
+    Skills and technologies used: Web scraping, headless browsing, rules engine.
+    Description: CLI tool for web scraping: user inputs commands like `show code`, `navigate`, `capture (CSS selector)`, `click on (CSS selector)`; navigate a website programmatically and capture HTML subsections or simulate clicks via code.
+
+---
