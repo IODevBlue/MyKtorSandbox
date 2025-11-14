@@ -1,9 +1,12 @@
 package io.github.iodevblue.sandbox.ktor.playground
 
+import io.github.iodevblue.sandbox.ktor.playground.eadriaticleague.ealRouting
+import io.github.iodevblue.sandbox.ktor.playground.esports.esportsRouting
+import io.github.iodevblue.sandbox.ktor.playground.gtleague.gtleagueRouting
+import io.github.iodevblue.sandbox.ktor.playground.telegram.activateTelegramBot
 import io.github.iodevblue.sandbox.ktor.playground.telegram.telegramBotRouting
 import io.ktor.server.application.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+
 
 fun main(args: Array<String>) {
 
@@ -13,5 +16,10 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     configureRouting()
-    telegramBotRouting()
+    if(activateTelegramBot) {
+        telegramBotRouting()
+    }
+    esportsRouting()
+    ealRouting()
+    gtleagueRouting()
 }

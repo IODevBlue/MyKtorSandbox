@@ -37,3 +37,4 @@ out/
 local.properties
 .env
 .DS_Store
+.kotlin/

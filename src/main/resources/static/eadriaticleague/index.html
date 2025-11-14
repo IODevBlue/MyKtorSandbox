@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>E-Adriatic League Match Predictor</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f9f9f9; }
+        input, button { margin: 5px 0; padding: 8px; width: 200px; }
+        .player { display: inline-block; width: 200px; text-align: center; margin-right: 20px; }
+        #result { background: #f4f4f4; padding: 10px; margin-top: 20px; }
+        #chartContainer { max-width: 600px; margin-top: 20px; }
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover { background-color: #e9e9e9; }
+    </style>
+</head>
+<body>
+<h1>E-Adriatic League Match Predictor</h1>
+
+<div style="position:relative;">
+    <input type="text" id="player1" placeholder="Player 1 Name">
+</div>
+<div style="position:relative;">
+    <input type="text" id="player2" placeholder="Player 2 Name">
+</div>
+<button onclick="predict()">Predict Match</button>
+
+<div id="playersInfo" style="margin-top:20px;">
+    <div class="player" id="p1Info"></div>
+    <div class="player" id="p2Info"></div>
+</div>
+
+<h2>Result:</h2>
+<pre id="result"></pre>
+
+<div id="chartContainer">
+    <canvas id="matchChart"></canvas>
+</div>
+
+<script>
+    let players = [];
+    let chart;
+
+    async function fetchPlayers() {
+        const resp = await fetch('/eal/grand-prix-2025');
+        players = await resp.json();
+        autocomplete(document.getElementById("player1"), players.map(p => p.name));
+        autocomplete(document.getElementById("player2"), players.map(p => p.name));
+    }
+
+    function findPlayer(name) {
+        return players.find(p => p.name.toLowerCase() === name.toLowerCase());
+    }
+
+    function renderChart(p1, p2) {
+        const ctx = document.getElementById('matchChart').getContext('2d');
+        const data = {
+            labels: ['Points'],
+            datasets: [
+                { label: p1.name, data: [p1.points], backgroundColor: 'rgba(75,192,192,0.6)' },
+                { label: p2.name, data: [p2.points], backgroundColor: 'rgba(255,99,132,0.6)' }
+            ]
+        };
+        if(chart) chart.destroy();
+        chart = new Chart(ctx, { type: 'bar', data: data, options: { responsive:true } });
+    }
+
+    function predict() {
+        const p1Name = document.getElementById('player1').value.trim();
+        const p2Name = document.getElementById('player2').value.trim();
+
+        if(!p1Name || !p2Name) return alert('Enter both player names');
+
+        const p1 = findPlayer(p1Name);
+        const p2 = findPlayer(p2Name);
+
+        if(!p1 || !p2) return alert('One or both players not found');
+
+        document.getElementById('p1Info').innerHTML = `<strong>${p1.name}</strong><br>${p1.category}<br>Points: ${p1.points}`;
+        document.getElementById('p2Info').innerHTML = `<strong>${p2.name}</strong><br>${p2.category}<br>Points: ${p2.points}`;
+
+        renderChart(p1, p2);
+
+        const total = p1.points + p2.points;
+        const p1Prob = p1.points / total;
+        const p2Prob = p2.points / total;
+
+        let recommendation;
+        if(p1Prob > p2Prob) recommendation = `${p1.name} is likely to win`;
+        else if(p2Prob > p1Prob) recommendation = `${p2.name} is likely to win`;
+        else recommendation = 'The match is likely a draw';
+
+        document.getElementById('result').innerHTML = `
+            <strong>Probabilities:</strong><br>
+            ${p1.name}: ${(p1Prob*100).toFixed(1)}%<br>
+            ${p2.name}: ${(p2Prob*100).toFixed(1)}%<br><br>
+            <strong>Recommendation:</strong> ${recommendation}
+        `;
+    }
+
+    function autocomplete(inp, arr) {
+        let currentFocus;
+        inp.addEventListener("input", function() {
+            let val = this.value;
+            closeAllLists();
+            if (!val) return false;
+            currentFocus = -1;
+            const list = document.createElement("DIV");
+            list.setAttribute("id", this.id + "autocomplete-list");
+            list.setAttribute("class", "autocomplete-items");
+            this.parentNode.appendChild(list);
+            arr.forEach(item => {
+                if(item.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    const itemDiv = document.createElement("DIV");
+                    itemDiv.innerHTML = "<strong>" + item.substr(0, val.length) + "</strong>";
+                    itemDiv.innerHTML += item.substr(val.length);
+                    itemDiv.addEventListener("click", function() {
+                        inp.value = item;
+                        closeAllLists();
+                    });
+                    list.appendChild(itemDiv);
+                }
+            });
+        });
+
+        inp.addEventListener("keydown", function(e) {
+            let x = document.getElementById(this.id + "autocomplete-list");
+            if(x) x = x.getElementsByTagName("div");
+            if(e.keyCode == 40) { currentFocus++; addActive(x); }
+            else if(e.keyCode == 38) { currentFocus--; addActive(x); }
+            else if(e.keyCode == 13) {
+                e.preventDefault();
+                if(currentFocus > -1 && x) { x[currentFocus].click(); }
+                else { predict(); }
+            }
+        });
+
+        function addActive(x) {
+            if(!x) return false;
+            removeActive(x);
+            if(currentFocus >= x.length) currentFocus = 0;
+            if(currentFocus < 0) currentFocus = (x.length - 1);
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+
+        function removeActive(x) {
+            for(let i=0;i<x.length;i++) x[i].classList.remove("autocomplete-active");
+        }
+
+        function closeAllLists(elmnt) {
+            const x = document.getElementsByClassName("autocomplete-items");
+            for(let i=0;i<x.length;i++)
+                if(elmnt != x[i] && elmnt != inp) x[i].parentNode.removeChild(x[i]);
+        }
+
+        document.addEventListener("click", function (e) { closeAllLists(e.target); });
+    }
+
+    fetchPlayers();
+</script>
+</body>
+</html>

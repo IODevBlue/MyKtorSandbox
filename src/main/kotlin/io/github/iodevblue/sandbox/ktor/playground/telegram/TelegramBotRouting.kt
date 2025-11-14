@@ -20,6 +20,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
+const val activateTelegramBot = true
+
 fun Application.telegramBotRouting() {
     val botToken = environment.config.propertyOrNull("ktor.environment.TELEGRAM_TEST_BOT_TOKEN")?.getString()
         ?: error("TELEGRAM_TEST_BOT_TOKEN not set")

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Esports Match Predictor</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f9f9f9; }
+        input, button { margin: 5px 0; padding: 8px; width: 200px; }
+        .player { display: inline-block; width: 200px; text-align: center; margin-right: 20px; }
+        img { width: 100px; height: 100px; border-radius: 50%; }
+        #result { background: #f4f4f4; padding: 10px; margin-top: 20px; }
+        #chartContainer { max-width: 600px; margin-top: 20px; }
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover { background-color: #e9e9e9; }
+    </style>
+</head>
+<body>
+<h1>Esports Match Predictor</h1>
+
+<div style="position:relative;">
+    <input type="text" id="player1" placeholder="Player 1 Nickname">
+</div>
+<div style="position:relative;">
+    <input type="text" id="player2" placeholder="Player 2 Nickname">
+</div>
+
+<button onclick="predict(false)">Predict Match</button>
+<button onclick="predict(true)">Refresh Data</button>
+
+<div id="playersInfo" style="margin-top:20px;">
+    <div class="player" id="p1Info"></div>
+    <div class="player" id="p2Info"></div>
+</div>
+
+<h2>Result:</h2>
+<pre id="result"></pre>
+
+<div id="chartContainer">
+    <canvas id="matchChart"></canvas>
+</div>
+
+<script>
+    let frontendCache = {};  // nickname -> player data
+    let cacheExpiry = {};    // nickname -> timestamp (ms)
+    const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+    let chart;
+    let playerList = [];
+
+    async function fetchPlayersList() {
+        const resp = await fetch('/esports/players'); // use the JSON endpoint
+        if(!resp.ok) throw new Error("Failed to fetch players list");
+        playerList = await resp.json(); // now this is an array of strings
+        autocomplete(document.getElementById("player1"), playerList);
+        autocomplete(document.getElementById("player2"), playerList);
+    }
+
+    async function fetchPlayer(nick, refresh=false) {
+        const now = Date.now();
+
+        // Check local cache first
+        if (!refresh && frontendCache[nick] && (now - cacheExpiry[nick]) < CACHE_DURATION) {
+            console.log(`Using cached player: ${nick}`);
+            return frontendCache[nick];
+        }
+
+        // Otherwise fetch from server
+        const url = refresh
+            ? `/esports/player/${encodeURIComponent(nick)}?refresh=true`
+            : `/esports/player/${encodeURIComponent(nick)}`;
+        const resp = await fetch(url);
+        if(!resp.ok) throw new Error("Failed to fetch player: " + nick);
+
+        const player = await resp.json();
+        frontendCache[nick] = player;   // cache result
+        cacheExpiry[nick] = now;
+        return player;
+    }
+
+    function showPlayerInfo(player, containerId) {
+        const photoUrl = player.photo || '/esports/static/images/default.png'; // fallback
+        document.getElementById(containerId).innerHTML = `
+            <img src="${photoUrl}" alt="${player.nickname}"><br>
+            <strong>${player.nickname}</strong><br>
+            Wins: ${player.totalWin}<br>
+            Draws: ${player.totalDraw}<br>
+            Losses: ${player.totalLose}
+        `;
+    }
+
+
+    function renderChart(p1, p2) {
+        const ctx = document.getElementById('matchChart').getContext('2d');
+        const data = {
+            labels: ['Wins', 'Draws', 'Losses'],
+            datasets: [
+                {
+                    label: p1.nickname,
+                    data: [p1.totalWin, p1.totalDraw, p1.totalLose],
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                },
+                {
+                    label: p2.nickname,
+                    data: [p2.totalWin, p2.totalDraw, p2.totalLose],
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                }
+            ]
+        };
+        if(chart) chart.destroy();
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: { responsive:true, plugins:{legend:{position:'top'}} }
+        });
+    }
+
+    async function predict(refresh=false) {
+        const p1Nick = document.getElementById("player1").value.trim();
+        const p2Nick = document.getElementById("player2").value.trim();
+        if(!p1Nick || !p2Nick) return alert("Enter both nicknames");
+
+        const resultEl = document.getElementById("result");
+        resultEl.innerHTML = "Loading…";
+
+        try {
+            const [p1, p2] = await Promise.all([
+                fetchPlayer(p1Nick, refresh),
+                fetchPlayer(p2Nick, refresh)
+            ]);
+
+            showPlayerInfo(p1, 'p1Info');
+            showPlayerInfo(p2, 'p2Info');
+
+            renderChart(p1, p2);
+
+            const resp = await fetch(`/esports/matchup/${p1Nick}/${p2Nick}${refresh ? '?refresh=true' : ''}`);
+            if(!resp.ok) throw new Error("Failed to fetch matchup");
+            const matchup = await resp.json();
+
+            resultEl.innerHTML = `
+                <strong>Probabilities:</strong><br>
+                ${matchup.player1}: ${(matchup.probability.player1Win*100).toFixed(1)}%<br>
+                ${matchup.player2}: ${(matchup.probability.player2Win*100).toFixed(1)}%<br>
+                Draw: ${(matchup.probability.draw*100).toFixed(1)}%<br><br>
+                <strong>Recommendation:</strong> ${matchup.recommendation}<br>
+                <strong>Expected Total Goals:</strong> ${matchup.expectedGoals.toFixed(2)}<br>
+                <strong>Likely Market:</strong> ${matchup.likelyOverUnder}
+            `;
+        } catch(e) {
+            resultEl.innerHTML = "Error: " + e.message;
+        }
+    }
+
+    function autocomplete(inp, arr) {
+        let currentFocus;
+        inp.addEventListener("input", function() {
+            let val = this.value;
+            closeAllLists();
+            if(!val) return false;
+            currentFocus = -1;
+            const list = document.createElement("DIV");
+            list.setAttribute("id", this.id + "autocomplete-list");
+            list.setAttribute("class", "autocomplete-items");
+            this.parentNode.appendChild(list);
+            arr.forEach(item => {
+                if(item.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    const itemDiv = document.createElement("DIV");
+                    itemDiv.innerHTML = "<strong>" + item.substr(0, val.length) + "</strong>";
+                    itemDiv.innerHTML += item.substr(val.length);
+                    itemDiv.addEventListener("click", function() {
+                        inp.value = item;
+                        closeAllLists();
+                    });
+                    list.appendChild(itemDiv);
+                }
+            });
+        });
+
+        inp.addEventListener("keydown", function(e) {
+            let x = document.getElementById(this.id + "autocomplete-list");
+            if(x) x = x.getElementsByTagName("div");
+            if(e.keyCode == 40) { currentFocus++; addActive(x); }
+            else if(e.keyCode == 38) { currentFocus--; addActive(x); }
+            else if(e.keyCode == 13) {
+                e.preventDefault();
+                if(currentFocus > -1 && x) x[currentFocus].click();
+                else predict(false);
+            }
+        });
+
+        function addActive(x) { if(!x) return false; removeActive(x); if(currentFocus >= x.length) currentFocus=0; if(currentFocus<0) currentFocus=x.length-1; x[currentFocus].classList.add("autocomplete-active"); }
+        function removeActive(x) { for(let i=0;i<x.length;i++) x[i].classList.remove("autocomplete-active"); }
+        function closeAllLists(elmnt) { const x=document.getElementsByClassName("autocomplete-items"); for(let i=0;i<x.length;i++) if(elmnt!=x[i] && elmnt!=inp) x[i].parentNode.removeChild(x[i]); }
+        document.addEventListener("click", function (e) { closeAllLists(e.target); });
+    }
+
+    fetchPlayersList();
+
+    document.getElementById("player1").addEventListener("keydown", function(e) { if(e.key==="Enter") predict(false); });
+    document.getElementById("player2").addEventListener("keydown", function(e) { if(e.key==="Enter") predict(false); });
+
+</script>
+</body>
+</html>

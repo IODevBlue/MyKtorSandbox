@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GTLeague Match Predictor</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .predictor-container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        .inputs {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .inputs div {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin: 20px auto;
+            display: block;
+            padding: 12px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #2980b9; }
+        .players-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .player {
+            text-align: center;
+            background: #f7f9fc;
+            padding: 15px;
+            border-radius: 10px;
+            width: 220px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .recommendation {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        table th {
+            background-color: #3498db;
+            color: white;
+        }
+        canvas {
+            margin-top: 30px;
+        }
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+        }
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover, .autocomplete-active {
+            background-color: #e9e9e9;
+        }
+    </style>
+</head>
+<body>
+
+<h1>GTLeague Match Predictor</h1>
+
+<div class="predictor-container">
+
+    <div class="inputs">
+        <div><input type="text" id="player1" placeholder="Player 1 Nickname"></div>
+        <div><input type="text" id="player2" placeholder="Player 2 Nickname"></div>
+    </div>
+    <button onclick="predict(false)">Predict Match</button>
+    <button onclick="predict(true)">Refresh Data</button>
+
+    <div class="players-info">
+        <div class="player" id="p1Info"></div>
+        <div class="player" id="p2Info"></div>
+    </div>
+
+    <div class="recommendation" id="recommendation"></div>
+
+    <table id="statsTable">
+        <thead>
+        <tr>
+            <th>Stat</th>
+            <th id="player1Name">Player 1</th>
+            <th id="player2Name">Player 2</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td>Global Points</td><td id="player1GlobalPoints"></td><td id="player2GlobalPoints"></td></tr>
+        <tr><td>Points</td><td id="player1Points"></td><td id="player2Points"></td></tr>
+        <tr><td>Wins</td><td id="player1Wins"></td><td id="player2Wins"></td></tr>
+        <tr><td>Draws</td><td id="player1Draws"></td><td id="player2Draws"></td></tr>
+        <tr><td>Losses</td><td id="player1Losses"></td><td id="player2Losses"></td></tr>
+        <tr><td>Goals For</td><td id="player1GoalsFor"></td><td id="player2GoalsFor"></td></tr>
+        <tr><td>Goals Against</td><td id="player1GoalsAgainst"></td><td id="player2GoalsAgainst"></td></tr>
+        <tr><td>Goal Difference</td><td id="player1GoalDiff"></td><td id="player2GoalDiff"></td></tr>
+        </tbody>
+    </table>
+
+    <canvas id="playerChart" height="200"></canvas>
+
+</div>
+
+<script>
+    let playerChart;
+    let playerList = [];
+
+    // Fetch player list for autocomplete
+    async function fetchPlayersList() {
+        const resp = await fetch('/gtleague/players');
+        playerList = await resp.json();
+        autocomplete(document.getElementById("player1"), playerList);
+        autocomplete(document.getElementById("player2"), playerList);
+    }
+
+    // Fetch individual player data
+    async function fetchPlayer(nick, refresh=false) {
+        const url = refresh ? `/gtleague/player/${nick}?refresh=true` : `/gtleague/player/${nick}`;
+        const resp = await fetch(url);
+        if(!resp.ok) throw new Error("Failed to fetch player: " + nick);
+        return await resp.json();
+    }
+
+    // Show player info card (without photos)
+    function showPlayerInfo(player, containerId) {
+        document.getElementById(containerId).innerHTML = `
+            <strong>${player.nickname}</strong><br>
+            Wins: ${player.wins} | Draws: ${player.draws} | Losses: ${player.losses}
+        `;
+    }
+
+    // Main predict function
+    async function predict(refresh=false) {
+        const p1Nick = document.getElementById("player1").value.trim();
+        const p2Nick = document.getElementById("player2").value.trim();
+        if(!p1Nick || !p2Nick) return alert("Enter both nicknames");
+
+        // Clear previous UI
+        document.getElementById("recommendation").textContent = '';
+        document.getElementById("statsTable").querySelectorAll("td").forEach(td => td.textContent='');
+        if(playerChart) playerChart.destroy();
+
+        try {
+            const [p1, p2] = await Promise.all([
+                fetchPlayer(p1Nick, refresh),
+                fetchPlayer(p2Nick, refresh)
+            ]);
+
+            showPlayerInfo(p1, 'p1Info');
+            showPlayerInfo(p2, 'p2Info');
+
+            const res = await fetch(`/gtleague/matchup/${encodeURIComponent(p1Nick)}/${encodeURIComponent(p2Nick)}${refresh?'?refresh=true':''}`);
+            if(!res.ok) throw new Error("Failed to fetch matchup");
+            const data = await res.json();
+
+            // Recommendation & probabilities
+            document.getElementById('recommendation').innerHTML = `
+                ${data.recommendation}<br>
+                ${data.player1}: ${(data.probability.player1Win*100).toFixed(1)}% |
+                ${data.player2}: ${(data.probability.player2Win*100).toFixed(1)}% |
+                Draw: ${(data.probability.draw*100).toFixed(1)}%<br>
+                Expected Goals: ${data.expectedGoalsPlayer1.toFixed(2)} - ${data.expectedGoalsPlayer2.toFixed(2)}
+            `;
+
+            // Update stats table
+            const s = data;
+            document.getElementById('player1Name').textContent = s.player1;
+            document.getElementById('player2Name').textContent = s.player2;
+            document.getElementById('player1GlobalPoints').textContent = s.player1Stats.globalPoints;
+            document.getElementById('player2GlobalPoints').textContent = s.player2Stats.globalPoints;
+            document.getElementById('player1Points').textContent = s.player1Stats.points;
+            document.getElementById('player2Points').textContent = s.player2Stats.points;
+            document.getElementById('player1Wins').textContent = s.player1Stats.wins;
+            document.getElementById('player2Wins').textContent = s.player2Stats.wins;
+            document.getElementById('player1Draws').textContent = s.player1Stats.draws;
+            document.getElementById('player2Draws').textContent = s.player2Stats.draws;
+            document.getElementById('player1Losses').textContent = s.player1Stats.losses;
+            document.getElementById('player2Losses').textContent = s.player2Stats.losses;
+            document.getElementById('player1GoalsFor').textContent = s.player1Stats.goalsFor;
+            document.getElementById('player2GoalsFor').textContent = s.player2Stats.goalsFor;
+            document.getElementById('player1GoalsAgainst').textContent = s.player1Stats.goalsAgainst;
+            document.getElementById('player2GoalsAgainst').textContent = s.player2Stats.goalsAgainst;
+            document.getElementById('player1GoalDiff').textContent = s.player1Stats.goalDifference;
+            document.getElementById('player2GoalDiff').textContent = s.player2Stats.goalDifference;
+
+            // Player comparison chart
+            const ctx = document.getElementById('playerChart').getContext('2d');
+            playerChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Wins', 'Draws', 'Losses', 'Goals For', 'Goals Against', 'Points'],
+                    datasets: [
+                        {
+                            label: s.player1,
+                            data: [
+                                s.player1Stats.wins,
+                                s.player1Stats.draws,
+                                s.player1Stats.losses,
+                                s.player1Stats.goalsFor,
+                                s.player1Stats.goalsAgainst,
+                                s.player1Stats.points
+                            ],
+                            backgroundColor: '#3498db'
+                        },
+                        {
+                            label: s.player2,
+                            data: [
+                                s.player2Stats.wins,
+                                s.player2Stats.draws,
+                                s.player2Stats.losses,
+                                s.player2Stats.goalsFor,
+                                s.player2Stats.goalsAgainst,
+                                s.player2Stats.points
+                            ],
+                            backgroundColor: '#e74c3c'
+                        }
+                    ]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'top' } } }
+            });
+
+        } catch(e) {
+            document.getElementById('recommendation').textContent = "Error: " + e.message;
+        }
+    }
+
+    // Autocomplete with arrow keys and enter
+    function autocomplete(inp, arr) {
+        let currentFocus;
+        inp.addEventListener("input", function() {
+            let val = this.value;
+            closeAllLists();
+            if(!val) return false;
+            currentFocus = -1;
+            const list = document.createElement("DIV");
+            list.setAttribute("id", this.id + "autocomplete-list");
+            list.setAttribute("class", "autocomplete-items");
+            this.parentNode.appendChild(list);
+            arr.forEach(item => {
+                if(item.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    const itemDiv = document.createElement("DIV");
+                    itemDiv.innerHTML = "<strong>" + item.substr(0, val.length) + "</strong>";
+                    itemDiv.innerHTML += item.substr(val.length);
+                    itemDiv.addEventListener("click", function() { inp.value=item; closeAllLists(); });
+                    list.appendChild(itemDiv);
+                }
+            });
+        });
+
+        inp.addEventListener("keydown", function(e) {
+            let x = document.getElementById(this.id + "autocomplete-list");
+            if(x) x=x.getElementsByTagName("div");
+            if(e.keyCode==40){ currentFocus++; addActive(x); }
+            else if(e.keyCode==38){ currentFocus--; addActive(x); }
+            else if(e.keyCode==13){ e.preventDefault(); if(currentFocus>-1 && x) x[currentFocus].click(); else predict(false);}
+        });
+
+        function addActive(x){ if(!x) return false; removeActive(x); if(currentFocus>=x.length) currentFocus=0; if(currentFocus<0) currentFocus=x.length-1; x[currentFocus].classList.add("autocomplete-active"); }
+        function removeActive(x){ for(let i=0;i<x.length;i++) x[i].classList.remove("autocomplete-active"); }
+        function closeAllLists(elmnt){ const x=document.getElementsByClassName("autocomplete-items"); for(let i=0;i<x.length;i++) if(elmnt!=x[i] && elmnt!=inp) x[i].parentNode.removeChild(x[i]); }
+        document.addEventListener("click", function(e){ closeAllLists(e.target); });
+    }
+
+    fetchPlayersList();
+    document.getElementById("player1").addEventListener("keydown", e => { if(e.key==="Enter") predict(false); });
+    document.getElementById("player2").addEventListener("keydown", e => { if(e.key==="Enter") predict(false); });
+</script>
+
+</body>
+</html>
+
